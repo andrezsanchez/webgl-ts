@@ -120,6 +120,8 @@ class WebGL2 {
 
   error: WebGL2Error | null = null;
 
+  blendColor_: [number, number, number, number] = [0, 0, 0, 0];
+
   clearColor_: [number, number, number, number] = [0, 0, 0, 0];
   clearDepth_: number = 1;
   clearStencil_: number = 0;
@@ -345,6 +347,11 @@ class WebGL2 {
 
   vertexAttrib4f(attributeLocation: number, x: number, y: number, z: number, w: number) {
     this.vertexAttributes.set(attributeLocation, new Float32Array([x, y, z, w]));
+  }
+
+  blendColor(r: number, g: number, b: number, a: number) {
+    // TODO: clamp
+    this.blendColor_ = [r, g, b, a];
   }
 
   // TODO: implement
