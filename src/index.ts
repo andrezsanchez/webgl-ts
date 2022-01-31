@@ -156,6 +156,96 @@ class WebGL2 {
     [WebGL2Capability.RASTERIZER_DISCARD]: false,
   }
 
+  // TODO: Implement the following methods:
+  // activeTexture
+  // attachShader
+  // bindAttribLocation
+  // bindFramebuffer
+  // bindRenderbuffer
+  // bindTexture
+  // blendEquation
+  // blendEquationSeparate
+  // blendFunc
+  // blendFuncSeparate
+  // bufferSubData
+  // checkFramebufferStatus
+  // clear(mask: number)
+  // commit
+  // compileShader
+  // compressedTexImage[23]D
+  // compressedTexSubImage2D
+  // copyTexImage2D()
+  // copyTexSubImage2D()
+  // createFramebuffer
+  // createProgram
+  // createRenderbuffer
+  // createShader
+  // createTexture
+  // deleteBuffer
+  // deleteFramebuffer
+  // deleteShader
+  // deleteTexture
+  // depthFunc
+  // depthMask
+  // detachShader
+  // drawArrays
+  // drawElements
+  // finish
+  // flush
+  // framebufferRenderbuffer
+  // framebufferTexture2D
+  // generateMipmap
+  // getActiveAttrib
+  // getActiveUniform
+  // getAttachedShaders
+  // getAttribLocation
+  // getBufferParameter
+  // getContextAttributes
+  // getExtension
+  // getFramebufferAttachmentParameter
+  // getProgramInfoLog
+  // getProgramParameter
+  // getRenderbufferParameter
+  // getShaderInfoLog
+  // getShaderParameter
+  // getShaderPrecisionFormat
+  // getShaderSource
+  // getSupportedExtensions
+  // getTexParameter
+  // getUniform
+  // getUniformLocation
+  // getVertexAttrib
+  // getVertexAttribOffset
+  // hint
+  // isContextLost
+  // isFramebuffer
+  // isProgram
+  // isRenderbuffer
+  // isShader
+  // isTexture
+  // linkProgram
+  // makeXRCompatible
+  // pixelStorei
+  // readPixels
+  // renderbufferStorage
+  // sampleCoverage
+  // shaderSource
+  // stencilFunc
+  // stencilFuncSeparate
+  // stencilMask
+  // stencilMaskSeparate
+  // stencilOp
+  // stencilOpSeparate
+  // texImage2D
+  // texParameter[fi]
+  // texSubImage2D
+  // uniform[1234][fi][v]
+  // uniformMatrix[234]fv
+  // useProgram
+  // validateProgram
+  // vertexAttrib[1234]fv
+
+
   createVertexArray(): WebGL2VertexArray {
     return {
       pointers: new Map(),
@@ -329,10 +419,6 @@ class WebGL2 {
     };
   }
 
-  // TODO: implement
-  drawArrays() {
-  }
-
   vertexAttrib1f(attributeLocation: number, x: number) {
     this.vertexAttributes.set(attributeLocation, new Float32Array([x]));
   }
@@ -352,10 +438,6 @@ class WebGL2 {
   blendColor(r: number, g: number, b: number, a: number) {
     // TODO: clamp
     this.blendColor_ = [r, g, b, a];
-  }
-
-  // TODO: implement
-  clear(mask: number) {
   }
 
   clearColor(r: number, g: number, b: number, a: number) {
