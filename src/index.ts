@@ -4,6 +4,8 @@ enum WebGL2ArrayBufferTarget {
 }
 
 type GLsize = number;
+type GLint = number;
+type WebGLUniformLocation = GLint;
 
 enum WebGL2BufferUsage {
   STREAM_DRAW,
@@ -70,7 +72,7 @@ enum WebGL2DataType {
   FLOAT,
 }
 
-enum WebGL2CullFace {
+enum WebGL2Face {
   FRONT,
   BACK,
   FRONT_AND_BACK,
@@ -95,11 +97,127 @@ enum WebGL2FrontFace {
 }
 
 enum WebGL2Parameter {
+  BLEND_SRC_RGB,
+  BLEND_SRC_ALPHA,
+  BLEND_DEST_RGB,
+  BLEND_DEST_ALPHA,
+  BLEND_EQUATION_RGB,
+  BLEND_EQUATION_ALPHA,
   CULL_FACE,
   DEPTH_RANGE,
   LINE_WIDTH,
   ALIASED_LINE_WIDTH_RANGE,
   VIEWPORT,
+  STENCIL_TEST,
+  STENCIL_FUNC,
+  STENCIL_BACK_FUNC,
+  STENCIL_VALUE_MASK,
+  STENCIL_BACK_VALUE_MASK,
+  STENCIL_REF,
+  STENCIL_BACK_REF,
+  STENCIL_WRITEMASK,
+  STENCIL_BACK_WRITEMASK,
+  STENCIL_FAIL,
+  STENCIL_PASS_DEPTH_PASS,
+  STENCIL_PASS_DEPTH_FAIL,
+  STENCIL_BACK_FAIL,
+  STENCIL_BACK_PASS_DEPTH_PASS,
+  STENCIL_BACK_PASS_DEPTH_FAIL,
+  STENCIL_BITS,
+}
+
+enum WebGL2BlendFunc {
+  ZERO,
+  ONE,
+  SRC_COLOR,
+  ONE_MINUS_SRC_COLOR,
+  DST_COLOR,
+  ONE_MINUS_DST_COLOR,
+  SRC_ALPHA,
+  ONE_MINUS_SRC_ALPHA,
+  DST_ALPHA,
+  ONE_MINUS_DST_ALPHA,
+  CONSTANT_COLOR,
+  ONE_MINUS_CONSTANT_COLOR,
+  CONSTANT_ALPHA,
+  ONE_MINUS_CONSTANT_ALPHA,
+  SRC_ALPHA_SATURATE,
+}
+
+interface WebGL2BlendFuncs {
+  sFactorRGB: WebGL2BlendFunc;
+  sFactorA: WebGL2BlendFunc;
+  dFactorRGB: WebGL2BlendFunc;
+  dFactorA: WebGL2BlendFunc;
+}
+
+enum WebGL2BlendEquation {
+  FUNC_ADD,
+  FUNC_REVERSE,
+  FUNC_REVERSE_SUBTRACT,
+  MIN,
+  MAX,
+}
+
+interface WebGL2BlendEquations {
+  modeRGB: WebGL2BlendEquation;
+  modeA: WebGL2BlendEquation;
+}
+
+enum WebGL2StencilFunc {
+  /** Never pass. */
+  NEVER,
+  /** Pass if (ref & mask) < (stencil & mask). */
+  LESS,
+  /** Pass if (ref & mask) = (stencil & mask). */
+  EQUAL,
+  /** Pass if (ref & mask) <= (stencil & mask). */
+  LEQUAL,
+  /** Pass if (ref & mask) > (stencil & mask). */
+  GREATER,
+  /** Pass if (ref & mask) != (stencil & mask). */
+  NOTEQUAL,
+  /** Pass if (ref & mask) >= (stencil & mask). */
+  GEQUAL,
+  /** Always pass. */
+  ALWAYS,
+}
+
+interface WebGL2StencilTest {
+  func: WebGL2StencilFunc,
+  mask: number,
+  ref: number,
+}
+
+interface WebGL2StencilTests {
+  front: WebGL2StencilTest;
+  back: WebGL2StencilTest;
+}
+
+interface WebGL2StencilMasks {
+  front: number;
+  back: number;
+}
+
+enum WebGL2StencilOp {
+  KEEP = 0x1E00,
+  REPLACE = 0x1E01,
+  INCR = 0x1E02,
+  DECR = 0x1E03,
+  INVERT = 0x150A,
+  INCR_WRAP = 0x8507,
+  DECR_WRAP = 0x8508,
+}
+
+interface WebGL2StencilOpSide {
+  fail: WebGL2StencilOp;
+  zfail: WebGL2StencilOp;
+  zpass: WebGL2StencilOp;
+}
+
+interface WebGL2StencilOps {
+  front: WebGL2StencilOpSide;
+  back: WebGL2StencilOpSide;
 }
 
 class WebGL2 {
@@ -134,7 +252,7 @@ class WebGL2 {
 
   colorMask_: [boolean, boolean, boolean, boolean] = [true, true, true, true];
 
-  cullFace_ = WebGL2CullFace.BACK;
+  cullFace_ = WebGL2Face.BACK;
 
   zNear = 0;
   zFar = 1;
@@ -156,6 +274,223 @@ class WebGL2 {
     [WebGL2Capability.RASTERIZER_DISCARD]: false,
   }
 
+  blendFunc_: WebGL2BlendFuncs = {
+    sFactorRGB: WebGL2BlendFunc.ONE,
+    sFactorA: WebGL2BlendFunc.ONE,
+    dFactorRGB: WebGL2BlendFunc.ZERO,
+    dFactorA: WebGL2BlendFunc.ZERO,
+  };
+
+  blendEquations_: WebGL2BlendEquations = {
+    modeRGB: WebGL2BlendEquation.FUNC_ADD,
+    modeA: WebGL2BlendEquation.FUNC_ADD,
+  };
+
+  stencilTests: WebGL2StencilTests = {
+    front: {
+      func: WebGL2StencilFunc.ALWAYS,
+      ref: 0,
+      mask: 1,
+    },
+    back: {
+      func: WebGL2StencilFunc.ALWAYS,
+      ref: 0,
+      mask: 0b11111111111111111111111111111111,
+    },
+  }
+
+  stencilMasks: WebGL2StencilMasks = {
+    front: 0b11111111111111111111111111111111,
+    back: 0b11111111111111111111111111111111,
+  };
+
+  stencilOps: WebGL2StencilOps = {
+    front: {
+      fail: WebGL2StencilOp.KEEP,
+      zfail: WebGL2StencilOp.KEEP,
+      zpass: WebGL2StencilOp.KEEP,
+    },
+    back: {
+      fail: WebGL2StencilOp.KEEP,
+      zfail: WebGL2StencilOp.KEEP,
+      zpass: WebGL2StencilOp.KEEP,
+    },
+  };
+
+  canvas: Uint8ClampedArray;
+
+  constructor(width: number, height: number) {
+    this.canvas = new Uint8ClampedArray(width * height * 4);
+  }
+
+  blendFunc(sFactor: WebGL2BlendFunc, dFactor: WebGL2BlendFunc) {
+    const sourceIsConstantColor = ((sFactor === WebGL2BlendFunc.CONSTANT_COLOR) || (sFactor === WebGL2BlendFunc.ONE_MINUS_CONSTANT_COLOR));
+    const destIsConstantColor = ((dFactor === WebGL2BlendFunc.CONSTANT_COLOR) || (dFactor === WebGL2BlendFunc.ONE_MINUS_CONSTANT_COLOR));
+    const sourceIsConstantAlpha = ((sFactor === WebGL2BlendFunc.CONSTANT_ALPHA) || (sFactor === WebGL2BlendFunc.ONE_MINUS_CONSTANT_ALPHA));
+    const destIsConstantAlpha = ((dFactor === WebGL2BlendFunc.CONSTANT_ALPHA) || (dFactor === WebGL2BlendFunc.ONE_MINUS_CONSTANT_ALPHA));
+
+    if ((sourceIsConstantColor && destIsConstantAlpha) || (sourceIsConstantAlpha && destIsConstantColor)) {
+      this.setError(WebGL2ErrorType.INVALID_OPERATION, "Cannot use constant color with a constant alpha together");
+      return;
+    }
+
+    this.blendFunc_ = {
+      sFactorRGB: sFactor,
+      sFactorA: sFactor,
+      dFactorRGB: dFactor,
+      dFactorA: dFactor,
+    };
+  }
+
+  blendFuncSeparate(
+    sFactorRGB: WebGL2BlendFunc,
+    sFactorA: WebGL2BlendFunc,
+    dFactorRGB: WebGL2BlendFunc,
+    dFactorA: WebGL2BlendFunc,
+  ) {
+    const sourceIsConstantColor = ((sFactorRGB === WebGL2BlendFunc.CONSTANT_COLOR) || (sFactorRGB === WebGL2BlendFunc.ONE_MINUS_CONSTANT_COLOR));
+    const destIsConstantColor = ((dFactorRGB === WebGL2BlendFunc.CONSTANT_COLOR) || (dFactorRGB === WebGL2BlendFunc.ONE_MINUS_CONSTANT_COLOR));
+    const sourceIsConstantAlpha = ((sFactorRGB === WebGL2BlendFunc.CONSTANT_ALPHA) || (sFactorRGB === WebGL2BlendFunc.ONE_MINUS_CONSTANT_ALPHA));
+    const destIsConstantAlpha = ((dFactorRGB === WebGL2BlendFunc.CONSTANT_ALPHA) || (dFactorRGB === WebGL2BlendFunc.ONE_MINUS_CONSTANT_ALPHA));
+
+    if ((sourceIsConstantColor && destIsConstantAlpha) || (sourceIsConstantAlpha && destIsConstantColor)) {
+      this.setError(WebGL2ErrorType.INVALID_OPERATION, "Cannot use constant color with a constant alpha together");
+      return;
+    }
+
+    this.blendFunc_ = {
+      sFactorRGB,
+      sFactorA,
+      dFactorRGB,
+      dFactorA,
+    };
+  }
+
+  blendEquation(mode: WebGL2BlendEquation) {
+    this.blendEquations_ = {
+      modeRGB: mode,
+      modeA: mode,
+    };
+  }
+
+  blendEquationSeparate(
+    modeRGB: WebGL2BlendEquation,
+    modeA: WebGL2BlendEquation,
+  ) {
+    this.blendEquations_ = {
+      modeRGB,
+      modeA,
+    };
+  }
+
+  stencilFunc(
+    func: WebGL2StencilFunc,
+    ref: number,
+    mask: number,
+  ) {
+    this.stencilTests.front = {
+      func,
+      ref,
+      mask,
+    };
+    this.stencilTests.back = {
+      func,
+      ref,
+      mask,
+    };
+  }
+
+  stencilFuncSeparate(
+    face: WebGL2Face,
+    func: WebGL2StencilFunc,
+    ref: number,
+    mask: number,
+  ) {
+    const front = (face === WebGL2Face.FRONT) || (face === WebGL2Face.FRONT_AND_BACK);
+    const back = (face === WebGL2Face.BACK) || (face === WebGL2Face.FRONT_AND_BACK);
+
+    if (front) {
+      this.stencilTests.front = {
+        func,
+        ref,
+        mask,
+      };
+    }
+
+    if (back) {
+      this.stencilTests.back = {
+        func,
+        ref,
+        mask,
+      };
+    }
+  }
+
+  stencilMask(mask: number) {
+    this.stencilMasks.front = mask;
+    this.stencilMasks.back = mask;
+  }
+
+  stencilMaskSeparate(
+    face: WebGL2Face,
+    mask: number,
+  ) {
+    const front = (face === WebGL2Face.FRONT) || (face === WebGL2Face.FRONT_AND_BACK);
+    const back = (face === WebGL2Face.BACK) || (face === WebGL2Face.FRONT_AND_BACK);
+
+    if (front) {
+      this.stencilMasks.front = mask;
+    }
+
+    if (back) {
+      this.stencilMasks.back = mask;
+    }
+  }
+
+
+  stencilOp(
+    fail: WebGL2StencilOp,
+    zfail: WebGL2StencilOp,
+    zpass: WebGL2StencilOp,
+  ) {
+    this.stencilOps.front = {
+      fail,
+      zfail,
+      zpass,
+    };
+    this.stencilOps.back = {
+      fail,
+      zfail,
+      zpass,
+    };
+  }
+
+  stencilOpSeparate(
+    face: WebGL2Face,
+    fail: WebGL2StencilOp,
+    zfail: WebGL2StencilOp,
+    zpass: WebGL2StencilOp,
+  ) {
+    const front = (face === WebGL2Face.FRONT) || (face === WebGL2Face.FRONT_AND_BACK);
+    const back = (face === WebGL2Face.BACK) || (face === WebGL2Face.FRONT_AND_BACK);
+
+    if (front) {
+      this.stencilOps.front = {
+        fail,
+        zfail,
+        zpass,
+      };
+    }
+
+    if (back) {
+      this.stencilOps.back = {
+        fail,
+        zfail,
+        zpass,
+      };
+    }
+  }
+
   // TODO: Implement the following methods:
   // activeTexture
   // attachShader
@@ -163,10 +498,6 @@ class WebGL2 {
   // bindFramebuffer
   // bindRenderbuffer
   // bindTexture
-  // blendEquation
-  // blendEquationSeparate
-  // blendFunc
-  // blendFuncSeparate
   // bufferSubData
   // checkFramebufferStatus
   // clear(mask: number)
@@ -230,12 +561,6 @@ class WebGL2 {
   // renderbufferStorage
   // sampleCoverage
   // shaderSource
-  // stencilFunc
-  // stencilFuncSeparate
-  // stencilMask
-  // stencilMaskSeparate
-  // stencilOp
-  // stencilOpSeparate
   // texImage2D
   // texParameter[fi]
   // texSubImage2D
@@ -470,7 +795,7 @@ class WebGL2 {
     this.colorMask_ = [r, g, b, a];
   }
 
-  cullFace(mode: WebGL2CullFace) {
+  cullFace(mode: WebGL2Face) {
     this.cullFace_ = mode;
   }
 
@@ -487,7 +812,7 @@ class WebGL2 {
     this.scissor_ = [x, y, width, height];
   }
 
-  getParameter(parameter: WebGL2Parameter.CULL_FACE): WebGL2CullFace;
+  getParameter(parameter: WebGL2Parameter.CULL_FACE): WebGL2Face;
   getParameter(parameter: WebGL2Parameter.DEPTH_RANGE): Float32Array;
   getParameter(parameter: WebGL2Parameter.VIEWPORT): Int32Array;
   getParameter(parameter: WebGL2Parameter.LINE_WIDTH): 1;
@@ -495,6 +820,14 @@ class WebGL2 {
 
   getParameter(parameter: WebGL2Parameter) {
     switch (parameter) {
+      case WebGL2Parameter.BLEND_SRC_RGB:
+        return this.blendFunc_.sFactorRGB;
+      case WebGL2Parameter.BLEND_SRC_ALPHA:
+        return this.blendFunc_.sFactorA;
+      case WebGL2Parameter.BLEND_DEST_RGB:
+        return this.blendFunc_.dFactorRGB;
+      case WebGL2Parameter.BLEND_DEST_ALPHA:
+        return this.blendFunc_.dFactorA;
       case WebGL2Parameter.CULL_FACE:
         return this.cullFace_;
       case WebGL2Parameter.DEPTH_RANGE:
@@ -505,6 +838,36 @@ class WebGL2 {
         return new Float32Array([1, 1]);
       case WebGL2Parameter.VIEWPORT:
         return new Int32Array(this.viewport_);
+      case WebGL2Parameter.STENCIL_FUNC:
+        return this.stencilTests.front.func;
+      case WebGL2Parameter.STENCIL_REF:
+        return this.stencilTests.front.ref;
+      case WebGL2Parameter.STENCIL_VALUE_MASK:
+        return this.stencilTests.front.mask;
+      case WebGL2Parameter.STENCIL_BACK_FUNC:
+        return this.stencilTests.back.func;
+      case WebGL2Parameter.STENCIL_BACK_REF:
+        return this.stencilTests.back.ref;
+      case WebGL2Parameter.STENCIL_BACK_VALUE_MASK:
+        return this.stencilTests.back.mask;
+      case WebGL2Parameter.STENCIL_BITS:
+        return 32;
+      case WebGL2Parameter.STENCIL_WRITEMASK:
+        return this.stencilMasks.front;
+      case WebGL2Parameter.STENCIL_BACK_WRITEMASK:
+        return this.stencilMasks.back;
+      case WebGL2Parameter.STENCIL_FAIL:
+        return this.stencilOps.front.fail;
+      case WebGL2Parameter.STENCIL_PASS_DEPTH_PASS:
+        return this.stencilOps.front.zpass;
+      case WebGL2Parameter.STENCIL_PASS_DEPTH_FAIL:
+        return this.stencilOps.front.zfail;
+      case WebGL2Parameter.STENCIL_BACK_FAIL:
+        return this.stencilOps.back.fail;
+      case WebGL2Parameter.STENCIL_BACK_PASS_DEPTH_PASS:
+        return this.stencilOps.back.zpass;
+      case WebGL2Parameter.STENCIL_BACK_PASS_DEPTH_FAIL:
+        return this.stencilOps.back.zfail;
     }
   }
 
