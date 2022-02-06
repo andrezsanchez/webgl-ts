@@ -1,322 +1,131 @@
-enum WebGL2ArrayBufferTarget {
-  ARRAY_BUFFER,
-  ELEMENT_ARRAY_BUFFER,
-}
+import {
+  WebGL2Face,
+  WebGL2State,
+  WebGL2FrontFace,
+  WebGL2Capability,
+  WebGL2BlendFunc,
+  WebGL2BlendEquation,
+  WebGL2ComparisonFunc,
+  WebGL2StencilOp,
+  WebGL2ErrorType,
+  WebGL2VertexArray,
+  WebGL2Program,
+  WebGL2VertexAttribute,
+  GL_MAX_VERTEX_ATTRIBS,
+  WebGL2DataType,
+  WebGL2ArrayBuffer,
+  WebGL2ArrayBufferTarget,
+  WebGL2BufferUsage,
+  GLsize,
+  WebGL2Parameter,
+} from './WebGL2State';
 
-type GLsize = number;
-type GLint = number;
-type WebGLUniformLocation = GLint;
-
-enum WebGL2BufferUsage {
-  STREAM_DRAW,
-  STREAM_READ,
-  STREAM_COPY,
-  STATIC_DRAW,
-  STATIC_READ,
-  STATIC_COPY,
-  DYNAMIC_DRAW,
-  DYNAMIC_READ,
-  DYNAMIC_COPY,
-}
-
-enum WebGL2ErrorType {
-  NO_ERROR,
-  INVALID_ENUM,
-  INVALID_VALUE,
-  INVALID_OPERATION,
-}
-
-interface WebGL2ArrayBufferContents {
-  data: Uint8Array;
-  elementSize: number;
-  usage: WebGL2BufferUsage;
-}
-
-interface WebGL2ArrayBuffer {
-  contents: WebGL2ArrayBufferContents | null;
-}
-
-interface WebGL2VertexArray {
-  pointers: Map<number, WebGL2VertexAttribute>;
-  elementBuffer: WebGL2ArrayBuffer | null;
-}
-
-interface WebGL2VertexAttributePointer {
-  buffer: WebGL2ArrayBuffer;
-  elementSize: number;
-  offset: number;
-  stride: number;
-  normalized: boolean;
-  type: WebGL2DataType;
-}
-
-interface WebGL2VertexAttribute {
-  index: number;
-  enabled: boolean;
-  pointer: WebGL2VertexAttributePointer | null;
-  // divisor?
-}
-
-interface WebGL2Program {
-  code: string;
-}
-
-const GL_MAX_VERTEX_ATTRIBS = 1024;
-
-interface WebGL2Error {
-  type: WebGL2ErrorType;
-  message: string;
-}
-
-enum WebGL2DataType {
-  FLOAT,
-}
-
-enum WebGL2Face {
-  FRONT,
-  BACK,
-  FRONT_AND_BACK,
-}
-
-enum WebGL2Capability {
-  BLEND,
-  CULL_FACE,
-  DEPTH_TEST,
-  DITHER,
-  POLYGON_OFFSET_FILL,
-  SAMPLE_ALPHA_TO_COVERAGE,
-  SAMPLE_COVERAGE,
-  SCISSOR_TEST,
-  STENCIL_TEST,
-  RASTERIZER_DISCARD,
-}
-
-enum WebGL2FrontFace {
-  CW,
-  CCW,
-}
-
-enum WebGL2Parameter {
-  BLEND_SRC_RGB,
-  BLEND_SRC_ALPHA,
-  BLEND_DEST_RGB,
-  BLEND_DEST_ALPHA,
-  BLEND_EQUATION_RGB,
-  BLEND_EQUATION_ALPHA,
-  CULL_FACE,
-  DEPTH_RANGE,
-  LINE_WIDTH,
-  ALIASED_LINE_WIDTH_RANGE,
-  VIEWPORT,
-  STENCIL_TEST,
-  STENCIL_FUNC,
-  STENCIL_BACK_FUNC,
-  STENCIL_VALUE_MASK,
-  STENCIL_BACK_VALUE_MASK,
-  STENCIL_REF,
-  STENCIL_BACK_REF,
-  STENCIL_WRITEMASK,
-  STENCIL_BACK_WRITEMASK,
-  STENCIL_FAIL,
-  STENCIL_PASS_DEPTH_PASS,
-  STENCIL_PASS_DEPTH_FAIL,
-  STENCIL_BACK_FAIL,
-  STENCIL_BACK_PASS_DEPTH_PASS,
-  STENCIL_BACK_PASS_DEPTH_FAIL,
-  STENCIL_BITS,
-}
-
-enum WebGL2BlendFunc {
-  ZERO,
-  ONE,
-  SRC_COLOR,
-  ONE_MINUS_SRC_COLOR,
-  DST_COLOR,
-  ONE_MINUS_DST_COLOR,
-  SRC_ALPHA,
-  ONE_MINUS_SRC_ALPHA,
-  DST_ALPHA,
-  ONE_MINUS_DST_ALPHA,
-  CONSTANT_COLOR,
-  ONE_MINUS_CONSTANT_COLOR,
-  CONSTANT_ALPHA,
-  ONE_MINUS_CONSTANT_ALPHA,
-  SRC_ALPHA_SATURATE,
-}
-
-interface WebGL2BlendFuncs {
-  sFactorRGB: WebGL2BlendFunc;
-  sFactorA: WebGL2BlendFunc;
-  dFactorRGB: WebGL2BlendFunc;
-  dFactorA: WebGL2BlendFunc;
-}
-
-enum WebGL2BlendEquation {
-  FUNC_ADD,
-  FUNC_REVERSE,
-  FUNC_REVERSE_SUBTRACT,
-  MIN,
-  MAX,
-}
-
-interface WebGL2BlendEquations {
-  modeRGB: WebGL2BlendEquation;
-  modeA: WebGL2BlendEquation;
-}
-
-enum WebGL2StencilFunc {
-  /** Never pass. */
-  NEVER,
-  /** Pass if (ref & mask) < (stencil & mask). */
-  LESS,
-  /** Pass if (ref & mask) = (stencil & mask). */
-  EQUAL,
-  /** Pass if (ref & mask) <= (stencil & mask). */
-  LEQUAL,
-  /** Pass if (ref & mask) > (stencil & mask). */
-  GREATER,
-  /** Pass if (ref & mask) != (stencil & mask). */
-  NOTEQUAL,
-  /** Pass if (ref & mask) >= (stencil & mask). */
-  GEQUAL,
-  /** Always pass. */
-  ALWAYS,
-}
-
-interface WebGL2StencilTest {
-  func: WebGL2StencilFunc,
-  mask: number,
-  ref: number,
-}
-
-interface WebGL2StencilTests {
-  front: WebGL2StencilTest;
-  back: WebGL2StencilTest;
-}
-
-interface WebGL2StencilMasks {
-  front: number;
-  back: number;
-}
-
-enum WebGL2StencilOp {
-  KEEP = 0x1E00,
-  REPLACE = 0x1E01,
-  INCR = 0x1E02,
-  DECR = 0x1E03,
-  INVERT = 0x150A,
-  INCR_WRAP = 0x8507,
-  DECR_WRAP = 0x8508,
-}
-
-interface WebGL2StencilOpSide {
-  fail: WebGL2StencilOp;
-  zfail: WebGL2StencilOp;
-  zpass: WebGL2StencilOp;
-}
-
-interface WebGL2StencilOps {
-  front: WebGL2StencilOpSide;
-  back: WebGL2StencilOpSide;
-}
-
-class WebGL2 {
-  defaultVertexArray: WebGL2VertexArray = {
+function createDefaultWebGL2State(): WebGL2State {
+  const defaultVertexArray = {
     pointers: new Map(),
     elementBuffer: null,
   };
 
-  // Bound objects
-  vertexArray: WebGL2VertexArray = this.defaultVertexArray;
-  arrayBuffer: WebGL2ArrayBuffer | null = null;
+  const viewport: [number, number, number, number] = [0, 0, 0, 0];
+  return {
+    defaultVertexArray,
+    vertexArray: defaultVertexArray,
+    arrayBuffer: null,
 
-  // Global vertex attribute values
-  vertexAttributes: Map<number, Float32Array> = new Map();
+    vertexAttributes: new Map(),
 
-  bufferSet: Set<WebGL2ArrayBuffer> = new Set();
-  vertexArraySet: Set<WebGL2VertexArray> = new Set([this.defaultVertexArray]);
+    bufferSet: new Set(),
+    vertexArraySet: new Set([defaultVertexArray]),
 
-  error: WebGL2Error | null = null;
+    error: null,
 
-  blendColor_: [number, number, number, number] = [0, 0, 0, 0];
+    blendColor: [0, 0, 0, 0],
 
-  clearColor_: [number, number, number, number] = [0, 0, 0, 0];
-  clearDepth_: number = 1;
-  clearStencil_: number = 0;
+    clearColor: [0, 0, 0, 0],
+    clearDepth: 1,
+    clearStencil: 0,
 
-  polygonOffsetFactor = 0;
-  polygonOffsetUnits = 0;
+    polygonOffsetFactor: 0,
+    polygonOffsetUnits: 0,
 
-  // TODO: adjust to size of canvas
-  viewport_: [number, number, number, number] = [0, 0, 0, 0];
+    // TODO: adjust to size of canvas
+    viewport,
 
-  colorMask_: [boolean, boolean, boolean, boolean] = [true, true, true, true];
+    colorMask: [true, true, true, true],
 
-  cullFace_ = WebGL2Face.BACK;
+    cullFace: WebGL2Face.BACK,
 
-  zNear = 0;
-  zFar = 1;
+    zNear: 0,
+    zFar: 1,
 
-  frontFace_: WebGL2FrontFace = WebGL2FrontFace.CCW;
+    frontFace: WebGL2FrontFace.CCW,
 
-  scissor_: [number, number, number, number] = [0, 0, this.viewport_[2], this.viewport_[3]];
+    scissor: [0, 0, viewport[2], viewport[3]],
 
-  capabilities: Record<WebGL2Capability, boolean> = {
-    [WebGL2Capability.BLEND]: false,
-    [WebGL2Capability.CULL_FACE]: false,
-    [WebGL2Capability.DEPTH_TEST]: false,
-    [WebGL2Capability.DITHER]: true,
-    [WebGL2Capability.POLYGON_OFFSET_FILL]: false,
-    [WebGL2Capability.SAMPLE_ALPHA_TO_COVERAGE]: false,
-    [WebGL2Capability.SAMPLE_COVERAGE]: false,
-    [WebGL2Capability.SCISSOR_TEST]: false,
-    [WebGL2Capability.STENCIL_TEST]: false,
-    [WebGL2Capability.RASTERIZER_DISCARD]: false,
-  }
-
-  blendFunc_: WebGL2BlendFuncs = {
-    sFactorRGB: WebGL2BlendFunc.ONE,
-    sFactorA: WebGL2BlendFunc.ONE,
-    dFactorRGB: WebGL2BlendFunc.ZERO,
-    dFactorA: WebGL2BlendFunc.ZERO,
-  };
-
-  blendEquations_: WebGL2BlendEquations = {
-    modeRGB: WebGL2BlendEquation.FUNC_ADD,
-    modeA: WebGL2BlendEquation.FUNC_ADD,
-  };
-
-  stencilTests: WebGL2StencilTests = {
-    front: {
-      func: WebGL2StencilFunc.ALWAYS,
-      ref: 0,
-      mask: 1,
+    capabilities: {
+      [WebGL2Capability.BLEND]: false,
+      [WebGL2Capability.CULL_FACE]: false,
+      [WebGL2Capability.DEPTH_TEST]: false,
+      [WebGL2Capability.DITHER]: true,
+      [WebGL2Capability.POLYGON_OFFSET_FILL]: false,
+      [WebGL2Capability.SAMPLE_ALPHA_TO_COVERAGE]: false,
+      [WebGL2Capability.SAMPLE_COVERAGE]: false,
+      [WebGL2Capability.SCISSOR_TEST]: false,
+      [WebGL2Capability.STENCIL_TEST]: false,
+      [WebGL2Capability.RASTERIZER_DISCARD]: false,
     },
-    back: {
-      func: WebGL2StencilFunc.ALWAYS,
-      ref: 0,
-      mask: 0b11111111111111111111111111111111,
-    },
-  }
 
-  stencilMasks: WebGL2StencilMasks = {
-    front: 0b11111111111111111111111111111111,
-    back: 0b11111111111111111111111111111111,
+    blendFunc: {
+      sFactorRGB: WebGL2BlendFunc.ONE,
+      sFactorA: WebGL2BlendFunc.ONE,
+      dFactorRGB: WebGL2BlendFunc.ZERO,
+      dFactorA: WebGL2BlendFunc.ZERO,
+    },
+
+    blendEquations: {
+      modeRGB: WebGL2BlendEquation.FUNC_ADD,
+      modeA: WebGL2BlendEquation.FUNC_ADD,
+    },
+
+    stencilTests: {
+      front: {
+        func: WebGL2ComparisonFunc.ALWAYS,
+        ref: 0,
+        mask: 1,
+      },
+      back: {
+        func: WebGL2ComparisonFunc.ALWAYS,
+        ref: 0,
+        mask: 0b11111111111111111111111111111111,
+      },
+    },
+
+    stencilMasks: {
+      front: 0b11111111111111111111111111111111,
+      back: 0b11111111111111111111111111111111,
+    },
+
+    stencilOps: {
+      front: {
+        fail: WebGL2StencilOp.KEEP,
+        zfail: WebGL2StencilOp.KEEP,
+        zpass: WebGL2StencilOp.KEEP,
+      },
+      back: {
+        fail: WebGL2StencilOp.KEEP,
+        zfail: WebGL2StencilOp.KEEP,
+        zpass: WebGL2StencilOp.KEEP,
+      },
+    },
+
+    depthFunc: WebGL2ComparisonFunc.LESS,
+
+    depthMask: true,
   };
+}
 
-  stencilOps: WebGL2StencilOps = {
-    front: {
-      fail: WebGL2StencilOp.KEEP,
-      zfail: WebGL2StencilOp.KEEP,
-      zpass: WebGL2StencilOp.KEEP,
-    },
-    back: {
-      fail: WebGL2StencilOp.KEEP,
-      zfail: WebGL2StencilOp.KEEP,
-      zpass: WebGL2StencilOp.KEEP,
-    },
-  };
-
+class WebGL2 {
+  state = createDefaultWebGL2State();
   canvas: Uint8ClampedArray;
 
   constructor(width: number, height: number) {
@@ -334,7 +143,7 @@ class WebGL2 {
       return;
     }
 
-    this.blendFunc_ = {
+    this.state.blendFunc = {
       sFactorRGB: sFactor,
       sFactorA: sFactor,
       dFactorRGB: dFactor,
@@ -358,7 +167,7 @@ class WebGL2 {
       return;
     }
 
-    this.blendFunc_ = {
+    this.state.blendFunc = {
       sFactorRGB,
       sFactorA,
       dFactorRGB,
@@ -367,7 +176,7 @@ class WebGL2 {
   }
 
   blendEquation(mode: WebGL2BlendEquation) {
-    this.blendEquations_ = {
+    this.state.blendEquations = {
       modeRGB: mode,
       modeA: mode,
     };
@@ -377,23 +186,23 @@ class WebGL2 {
     modeRGB: WebGL2BlendEquation,
     modeA: WebGL2BlendEquation,
   ) {
-    this.blendEquations_ = {
+    this.state.blendEquations = {
       modeRGB,
       modeA,
     };
   }
 
   stencilFunc(
-    func: WebGL2StencilFunc,
+    func: WebGL2ComparisonFunc,
     ref: number,
     mask: number,
   ) {
-    this.stencilTests.front = {
+    this.state.stencilTests.front = {
       func,
       ref,
       mask,
     };
-    this.stencilTests.back = {
+    this.state.stencilTests.back = {
       func,
       ref,
       mask,
@@ -402,7 +211,7 @@ class WebGL2 {
 
   stencilFuncSeparate(
     face: WebGL2Face,
-    func: WebGL2StencilFunc,
+    func: WebGL2ComparisonFunc,
     ref: number,
     mask: number,
   ) {
@@ -410,7 +219,7 @@ class WebGL2 {
     const back = (face === WebGL2Face.BACK) || (face === WebGL2Face.FRONT_AND_BACK);
 
     if (front) {
-      this.stencilTests.front = {
+      this.state.stencilTests.front = {
         func,
         ref,
         mask,
@@ -418,7 +227,7 @@ class WebGL2 {
     }
 
     if (back) {
-      this.stencilTests.back = {
+      this.state.stencilTests.back = {
         func,
         ref,
         mask,
@@ -427,8 +236,8 @@ class WebGL2 {
   }
 
   stencilMask(mask: number) {
-    this.stencilMasks.front = mask;
-    this.stencilMasks.back = mask;
+    this.state.stencilMasks.front = mask;
+    this.state.stencilMasks.back = mask;
   }
 
   stencilMaskSeparate(
@@ -439,11 +248,11 @@ class WebGL2 {
     const back = (face === WebGL2Face.BACK) || (face === WebGL2Face.FRONT_AND_BACK);
 
     if (front) {
-      this.stencilMasks.front = mask;
+      this.state.stencilMasks.front = mask;
     }
 
     if (back) {
-      this.stencilMasks.back = mask;
+      this.state.stencilMasks.back = mask;
     }
   }
 
@@ -453,12 +262,12 @@ class WebGL2 {
     zfail: WebGL2StencilOp,
     zpass: WebGL2StencilOp,
   ) {
-    this.stencilOps.front = {
+    this.state.stencilOps.front = {
       fail,
       zfail,
       zpass,
     };
-    this.stencilOps.back = {
+    this.state.stencilOps.back = {
       fail,
       zfail,
       zpass,
@@ -475,7 +284,7 @@ class WebGL2 {
     const back = (face === WebGL2Face.BACK) || (face === WebGL2Face.FRONT_AND_BACK);
 
     if (front) {
-      this.stencilOps.front = {
+      this.state.stencilOps.front = {
         fail,
         zfail,
         zpass,
@@ -483,7 +292,7 @@ class WebGL2 {
     }
 
     if (back) {
-      this.stencilOps.back = {
+      this.state.stencilOps.back = {
         fail,
         zfail,
         zpass,
@@ -498,7 +307,6 @@ class WebGL2 {
   // bindFramebuffer
   // bindRenderbuffer
   // bindTexture
-  // bufferSubData
   // checkFramebufferStatus
   // clear(mask: number)
   // commit
@@ -512,12 +320,9 @@ class WebGL2 {
   // createRenderbuffer
   // createShader
   // createTexture
-  // deleteBuffer
   // deleteFramebuffer
   // deleteShader
   // deleteTexture
-  // depthFunc
-  // depthMask
   // detachShader
   // drawArrays
   // drawElements
@@ -568,7 +373,6 @@ class WebGL2 {
   // uniformMatrix[234]fv
   // useProgram
   // validateProgram
-  // vertexAttrib[1234]fv
 
 
   createVertexArray(): WebGL2VertexArray {
@@ -578,18 +382,31 @@ class WebGL2 {
     };
   }
 
+  depthFunc(func: WebGL2ComparisonFunc) {
+    this.state.depthFunc = func;
+  }
+
+  depthMask(mask: boolean) {
+    this.state.depthMask = mask;
+  }
+
   // Stub method
   getAttribLocation(program: WebGL2Program, attributeName: string): number {
     return 0;
   }
 
-  bindVertexArray(vertexArray: WebGL2VertexArray) {
-    if (!this.vertexArraySet.has(vertexArray)) {
+  bindVertexArray(vertexArray: WebGL2VertexArray | null) {
+    if (vertexArray === null) {
+      this.state.vertexArray = this.state.defaultVertexArray;
+      return;
+    }
+  
+    if (!this.state.vertexArraySet.has(vertexArray)) {
       // ERROR?
       return;
     }
 
-    this.vertexArray = vertexArray;
+    this.state.vertexArray = vertexArray;
   }
 
   private createVertexAttribute(index: number): WebGL2VertexAttribute {
@@ -603,14 +420,14 @@ class WebGL2 {
   }
 
   private createOrGetVertexAttribute(index: number): WebGL2VertexAttribute {
-    const vertexAttribute = this.vertexArray.pointers.get(index) ?? this.createVertexAttribute(index);
-    this.vertexArray.pointers.set(index, vertexAttribute);
+    const vertexAttribute = this.state.vertexArray.pointers.get(index) ?? this.createVertexAttribute(index);
+    this.state.vertexArray.pointers.set(index, vertexAttribute);
 
     return vertexAttribute;
   }
 
   private setVertexAttribArrayEnabled(attributeLocation: number, enabled: boolean) {
-    if (!this.vertexArray) {
+    if (!this.state.vertexArray) {
       this.setError(WebGL2ErrorType.INVALID_OPERATION, "No vertex array object is bound");
       return;
     }
@@ -625,15 +442,15 @@ class WebGL2 {
   }
 
   private setError(type: WebGL2ErrorType, message: string) {
-    this.error = { type, message };
+    this.state.error = { type, message };
   }
 
   private clearError() {
-    this.error = null;
+    this.state.error = null;
   }
 
   getError(): WebGL2ErrorType {
-    return this.error?.type ?? WebGL2ErrorType.NO_ERROR;
+    return this.state.error?.type ?? WebGL2ErrorType.NO_ERROR;
   }
 
   enableVertexAttribArray(attributeLocation: number) {
@@ -652,12 +469,12 @@ class WebGL2 {
     offset: number,
   ) {
     // Can target generic vertex attributes.
-    // if (!this.vertexArray) {
+    // if (!this.state.vertexArray) {
     //   this.setError(WebGL2ErrorType.GL_INVALID_OPERATION, "No vertex array object is bound");
     //   return;
     // }
 
-    const buffer = this.arrayBuffer;
+    const buffer = this.state.arrayBuffer;
     if (!buffer) {
       this.setError(WebGL2ErrorType.INVALID_OPERATION, "No ARRAY_BUFFER buffer is bound");
       return;
@@ -683,14 +500,18 @@ class WebGL2 {
   }
 
   createBuffer(): WebGL2ArrayBuffer {
-    const buffer: WebGL2ArrayBuffer = { contents: null };
-    this.bufferSet.add(buffer);
+    const buffer: WebGL2ArrayBuffer = {
+      data: new Uint8Array(),
+      usage: WebGL2BufferUsage.STATIC_DRAW,
+      size: 0,
+    };
+    this.state.bufferSet.add(buffer);
 
     return buffer;
   }
 
   bindBuffer(target: WebGL2ArrayBufferTarget, buffer: WebGL2ArrayBuffer | undefined) {
-    if (buffer && !this.bufferSet.has(buffer)) {
+    if (buffer && !this.state.bufferSet.has(buffer)) {
       this.setError(WebGL2ErrorType.INVALID_VALUE, "Not a valid buffer object");
       return;
     }
@@ -702,79 +523,218 @@ class WebGL2 {
 
     switch (target) {
       case WebGL2ArrayBufferTarget.ELEMENT_ARRAY_BUFFER: {
-        this.vertexArray.elementBuffer = buffer ?? null;
+        this.state.vertexArray.elementBuffer = buffer ?? null;
         break;
       }
       case WebGL2ArrayBufferTarget.ARRAY_BUFFER: {
-        this.arrayBuffer = buffer ?? null;
+        this.state.arrayBuffer = buffer ?? null;
         break;
       }
     }
   }
 
+  deleteBuffer(buffer: WebGL2ArrayBuffer) {
+    if (!this.state.bufferSet.has(buffer)) {
+      this.setError(WebGL2ErrorType.INVALID_OPERATION, 'Cannot delete a buffer from another context');
+      return;
+    }
+
+    this.state.bufferSet.delete(buffer);
+
+    // TODO: Figure out what to do about this being used in other objects.
+  }
+
   isBuffer(value: unknown): value is WebGL2ArrayBuffer {
-    return this.bufferSet.has(value as WebGL2ArrayBuffer);
+    return this.state.bufferSet.has(value as WebGL2ArrayBuffer);
   }
 
   private getBufferForTarget(target: WebGL2ArrayBufferTarget): WebGL2ArrayBuffer | null {
     switch (target) {
-      case WebGL2ArrayBufferTarget.ARRAY_BUFFER: return this.arrayBuffer;
-      case WebGL2ArrayBufferTarget.ELEMENT_ARRAY_BUFFER: return this.vertexArray.elementBuffer;
+      case WebGL2ArrayBufferTarget.ARRAY_BUFFER: return this.state.arrayBuffer;
+      case WebGL2ArrayBufferTarget.ELEMENT_ARRAY_BUFFER: return this.state.vertexArray.elementBuffer;
       default: return null;
     }
   }
 
   bufferData(
     target: WebGL2ArrayBufferTarget,
-    size: GLsize,
-    data: Uint8Array,
+    size: number,
     usage: WebGL2BufferUsage,
+  ): undefined;
+
+  bufferData(
+    target: WebGL2ArrayBufferTarget,
+    srcData: ArrayBuffer | ArrayBufferView,
+    usage: WebGL2BufferUsage,
+  ): undefined;
+
+  bufferData(
+    target: WebGL2ArrayBufferTarget,
+    srcData: ArrayBuffer | ArrayBufferView,
+    usage: WebGL2BufferUsage,
+    srcOffset: number,
+    length?: number,
+  ): undefined;
+
+  bufferData(
+    target: WebGL2ArrayBufferTarget,
+    bufferOrSize: ArrayBuffer | ArrayBufferView | number,
+    usage: WebGL2BufferUsage,
+    srcOffset?: number,
+    length?: number,
   ) {
     const buffer = this.getBufferForTarget(target);
     if (!buffer) {
+      this.setError(WebGL2ErrorType.INVALID_OPERATION, 'No buffer is bound to the target');
       return;
     }
 
-    // Blow away any contents already present.
-    buffer.contents = {
-      // Copy the data.
-      data: new Uint8Array(data),
-      elementSize: size,
-      usage,
-    };
+    if (srcOffset === undefined) {
+      if (typeof bufferOrSize === 'number') {
+        this.setError(WebGL2ErrorType.INVALID_VALUE, 'Invalid buffer value');
+        return;
+      }
+    }
+
+    if (bufferOrSize instanceof ArrayBuffer) {
+      buffer.data = new Uint8Array(bufferOrSize);
+      buffer.size = buffer.data.length;
+    } else if (typeof bufferOrSize === 'number') {
+      buffer.data = new Uint8Array(bufferOrSize);
+      buffer.size = bufferOrSize;
+    } else {
+      const srcOffsetWithDefault = (typeof srcOffset === 'number') ? srcOffset : 0;
+      const totalOffset = srcOffsetWithDefault + bufferOrSize.byteOffset;
+      const size = length ?? 0;
+      if ((totalOffset + size) > (bufferOrSize.byteOffset + bufferOrSize.byteLength)) {
+        this.setError(WebGL2ErrorType.INVALID_OPERATION, 'Size and offset specified exceeds bounds of source buffer');
+        return;
+      }
+
+      buffer.data = new Uint8Array(bufferOrSize.buffer, totalOffset, size);
+    }
+
+    buffer.usage = usage;
+  }
+
+  bufferSubData(
+    target: WebGL2ArrayBufferTarget,
+    offset: number,
+    srcData: ArrayBuffer | ArrayBufferView | null,
+  ): undefined;
+  bufferSubData(
+    target: WebGL2ArrayBufferTarget,
+    dstByteOffset: number,
+    srcData: ArrayBuffer | ArrayBufferView | null,
+    srcOffset: number,
+    length: number,
+  ): undefined;
+
+  bufferSubData(
+    target: WebGL2ArrayBufferTarget,
+    offset: number,
+    srcData: ArrayBuffer | ArrayBufferView | null,
+    srcOffset: number = 0,
+    length?: number,
+  ) {
+    const arrayBuffer = this.getBufferForTarget(target);
+    if (!arrayBuffer) {
+      this.setError(WebGL2ErrorType.INVALID_ENUM, 'Invalid target');
+      return;
+    }
+
+    if (!srcData) {
+      this.setError(WebGL2ErrorType.INVALID_VALUE, 'null cannot be used for buffer data');
+      return;
+    }
+
+    const size = length ?? 0;
+    if (srcData instanceof ArrayBuffer) {
+      const totalOffset = srcOffset + srcData.byteLength;
+      const end = totalOffset + size;
+      if (end > arrayBuffer.size) {
+        this.setError(WebGL2ErrorType.INVALID_OPERATION, 'Size and offset specified exceeds bounds of source buffer');
+        return;
+      }
+
+      const srcBuffer = new Uint8Array(srcData);
+      for (let i = offset; i < end; i += 1) {
+        arrayBuffer.data[i] = srcBuffer[i];
+      }
+    }
   }
 
   vertexAttrib1f(attributeLocation: number, x: number) {
-    this.vertexAttributes.set(attributeLocation, new Float32Array([x]));
+    this.state.vertexAttributes.set(attributeLocation, new Float32Array([x]));
   }
 
   vertexAttrib2f(attributeLocation: number, x: number, y: number) {
-    this.vertexAttributes.set(attributeLocation, new Float32Array([x, y]));
+    this.state.vertexAttributes.set(attributeLocation, new Float32Array([x, y]));
   }
 
   vertexAttrib3f(attributeLocation: number, x: number, y: number, z: number) {
-    this.vertexAttributes.set(attributeLocation, new Float32Array([x, y, z]));
+    this.state.vertexAttributes.set(attributeLocation, new Float32Array([x, y, z]));
   }
 
   vertexAttrib4f(attributeLocation: number, x: number, y: number, z: number, w: number) {
-    this.vertexAttributes.set(attributeLocation, new Float32Array([x, y, z, w]));
+    this.state.vertexAttributes.set(attributeLocation, new Float32Array([x, y, z, w]));
+  }
+
+  vertexAttrib1fv(attributeLocation: number, list: Float32Array) {
+    if (list.length < 1) {
+      this.setError(WebGL2ErrorType.INVALID_VALUE, 'Array length must be at least 1');
+      return;
+    }
+
+    // Clone the list.
+    this.state.vertexAttributes.set(attributeLocation, new Float32Array(list));
+  }
+
+  vertexAttrib2fv(attributeLocation: number, list: Float32Array) {
+    if (list.length < 2) {
+      this.setError(WebGL2ErrorType.INVALID_VALUE, 'Array length must be at least 2');
+      return;
+    }
+
+    // Clone the list.
+    this.state.vertexAttributes.set(attributeLocation, new Float32Array(list));
+  }
+
+  vertexAttrib3fv(attributeLocation: number, list: Float32Array) {
+    if (list.length < 3) {
+      this.setError(WebGL2ErrorType.INVALID_VALUE, 'Array length must be at least 3');
+      return;
+    }
+
+    // Clone the list.
+    this.state.vertexAttributes.set(attributeLocation, new Float32Array(list));
+  }
+
+  vertexAttrib4fv(attributeLocation: number, list: Float32Array) {
+    if (list.length < 4) {
+      this.setError(WebGL2ErrorType.INVALID_VALUE, 'Array length must be at least 4');
+      return;
+    }
+
+    // Clone the list.
+    this.state.vertexAttributes.set(attributeLocation, new Float32Array(list));
   }
 
   blendColor(r: number, g: number, b: number, a: number) {
     // TODO: clamp
-    this.blendColor_ = [r, g, b, a];
+    this.state.blendColor = [r, g, b, a];
   }
 
   clearColor(r: number, g: number, b: number, a: number) {
-    this.clearColor_ = [r, g, b, a];
+    this.state.clearColor = [r, g, b, a];
   }
 
   clearDepth(depth: number) {
-    this.clearDepth_ = depth;
+    this.state.clearDepth = depth;
   }
 
   clearStencil(stencil: number) {
-    this.clearStencil_ = stencil;
+    this.state.clearStencil = stencil;
   }
 
   lineWidth(width: number) {
@@ -782,37 +742,38 @@ class WebGL2 {
   }
 
   polygonOffset(factor: number, units: number) {
-    this.polygonOffsetFactor = factor;
-    this.polygonOffsetUnits = units;
+    this.state.polygonOffsetFactor = factor;
+    this.state.polygonOffsetUnits = units;
   }
 
   viewport(x: number, y: number, width: number, height: number) {
     // TODO: validate inputs
-    this.viewport_ = [x, y, width, height];
+    this.state.viewport = [x, y, width, height];
   }
 
   colorMask(r: boolean, g: boolean, b: boolean, a: boolean) {
-    this.colorMask_ = [r, g, b, a];
+    this.state.colorMask = [r, g, b, a];
   }
 
   cullFace(mode: WebGL2Face) {
-    this.cullFace_ = mode;
+    this.state.cullFace = mode;
   }
 
   depthRange(zNear: number, zFar: number) {
-    this.zNear = Math.min(Math.max(zNear, 0), 1);
-    this.zFar = Math.min(Math.max(zFar, 0), 1);
+    this.state.zNear = Math.min(Math.max(zNear, 0), 1);
+    this.state.zFar = Math.min(Math.max(zFar, 0), 1);
   }
 
   frontFace(frontFace: WebGL2FrontFace) {
-    this.frontFace_ = frontFace;
+    this.state.frontFace = frontFace;
   }
 
   scissor(x: number, y: number, width: number, height: number) {
-    this.scissor_ = [x, y, width, height];
+    this.state.scissor = [x, y, width, height];
   }
 
   getParameter(parameter: WebGL2Parameter.CULL_FACE): WebGL2Face;
+  getParameter(parameter: WebGL2Parameter.DEPTH_FUNC): WebGL2ComparisonFunc;
   getParameter(parameter: WebGL2Parameter.DEPTH_RANGE): Float32Array;
   getParameter(parameter: WebGL2Parameter.VIEWPORT): Int32Array;
   getParameter(parameter: WebGL2Parameter.LINE_WIDTH): 1;
@@ -821,65 +782,69 @@ class WebGL2 {
   getParameter(parameter: WebGL2Parameter) {
     switch (parameter) {
       case WebGL2Parameter.BLEND_SRC_RGB:
-        return this.blendFunc_.sFactorRGB;
+        return this.state.blendFunc.sFactorRGB;
       case WebGL2Parameter.BLEND_SRC_ALPHA:
-        return this.blendFunc_.sFactorA;
+        return this.state.blendFunc.sFactorA;
       case WebGL2Parameter.BLEND_DEST_RGB:
-        return this.blendFunc_.dFactorRGB;
+        return this.state.blendFunc.dFactorRGB;
       case WebGL2Parameter.BLEND_DEST_ALPHA:
-        return this.blendFunc_.dFactorA;
+        return this.state.blendFunc.dFactorA;
       case WebGL2Parameter.CULL_FACE:
-        return this.cullFace_;
+        return this.state.cullFace;
+      case WebGL2Parameter.DEPTH_FUNC:
+        return this.state.depthFunc;
+      case WebGL2Parameter.DEPTH_MASK:
+        return this.state.depthMask;
       case WebGL2Parameter.DEPTH_RANGE:
-        return new Float32Array([this.zNear, this.zFar]);
+        return new Float32Array([this.state.zNear, this.state.zFar]);
       case WebGL2Parameter.LINE_WIDTH:
         return 1;
       case WebGL2Parameter.ALIASED_LINE_WIDTH_RANGE:
         return new Float32Array([1, 1]);
       case WebGL2Parameter.VIEWPORT:
-        return new Int32Array(this.viewport_);
+        return new Int32Array(this.state.viewport);
       case WebGL2Parameter.STENCIL_FUNC:
-        return this.stencilTests.front.func;
+        return this.state.stencilTests.front.func;
       case WebGL2Parameter.STENCIL_REF:
-        return this.stencilTests.front.ref;
+        return this.state.stencilTests.front.ref;
       case WebGL2Parameter.STENCIL_VALUE_MASK:
-        return this.stencilTests.front.mask;
+        return this.state.stencilTests.front.mask;
       case WebGL2Parameter.STENCIL_BACK_FUNC:
-        return this.stencilTests.back.func;
+        return this.state.stencilTests.back.func;
       case WebGL2Parameter.STENCIL_BACK_REF:
-        return this.stencilTests.back.ref;
+        return this.state.stencilTests.back.ref;
       case WebGL2Parameter.STENCIL_BACK_VALUE_MASK:
-        return this.stencilTests.back.mask;
+        return this.state.stencilTests.back.mask;
       case WebGL2Parameter.STENCIL_BITS:
         return 32;
       case WebGL2Parameter.STENCIL_WRITEMASK:
-        return this.stencilMasks.front;
+        return this.state.stencilMasks.front;
       case WebGL2Parameter.STENCIL_BACK_WRITEMASK:
-        return this.stencilMasks.back;
+        return this.state.stencilMasks.back;
       case WebGL2Parameter.STENCIL_FAIL:
-        return this.stencilOps.front.fail;
+        return this.state.stencilOps.front.fail;
       case WebGL2Parameter.STENCIL_PASS_DEPTH_PASS:
-        return this.stencilOps.front.zpass;
+        return this.state.stencilOps.front.zpass;
       case WebGL2Parameter.STENCIL_PASS_DEPTH_FAIL:
-        return this.stencilOps.front.zfail;
+        return this.state.stencilOps.front.zfail;
       case WebGL2Parameter.STENCIL_BACK_FAIL:
-        return this.stencilOps.back.fail;
+        return this.state.stencilOps.back.fail;
       case WebGL2Parameter.STENCIL_BACK_PASS_DEPTH_PASS:
-        return this.stencilOps.back.zpass;
+        return this.state.stencilOps.back.zpass;
       case WebGL2Parameter.STENCIL_BACK_PASS_DEPTH_FAIL:
-        return this.stencilOps.back.zfail;
+        return this.state.stencilOps.back.zfail;
     }
   }
 
   enable(capability: WebGL2Capability) {
-    this.capabilities[capability] = true;
+    this.state.capabilities[capability] = true;
   }
 
   disable(capability: WebGL2Capability) {
-    this.capabilities[capability] = false;
+    this.state.capabilities[capability] = false;
   }
 
   isEnabled(capability: WebGL2Capability): boolean {
-    return this.capabilities[capability];
+    return this.state.capabilities[capability];
   }
 }
